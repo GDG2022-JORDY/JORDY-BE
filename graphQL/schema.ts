@@ -28,7 +28,7 @@ export const schema: GraphQLSchema = buildSchema(`
     type listedUser {
         name: String!
         email: String!
-        tags: [Int]!
+        tag: [Int]!
     }
     
     type Query {
@@ -46,7 +46,7 @@ export const schema: GraphQLSchema = buildSchema(`
 export const resolver = {
     users: async (args: any, context: any, info: any): Promise<any> => {
         return await Users.findAll({
-            attributes: ['name', 'email', 'position']
+            attributes: ['name', 'email', 'tag']
         });
     },
     user: async (args: any, context: any, info: any): Promise<Users | null | string> => {

@@ -10,6 +10,31 @@ const SUCCESS: string = 'success';
 const USER_NOT_FOUND: string = 'user not found';
 const PASSWORD_NOT_MATCH: string = 'password not match';
 
+const tag_content = [
+    '준비철저한',
+    '무계획한',
+    '내향적인',
+    '외향적인',
+    '호기심 많은',
+    '체계적인',
+    '공감능력',
+    '상상력 많은',
+    '웃음 많은',
+    '자유로운',
+    '과묵한',
+    '도전적인',
+    '현실적인',
+    '논리적인',
+    '열정적인',
+    '재기발랄',
+    '예의바른',
+    '평화주의',
+    '합리적인',
+    '신중한',
+    '감성적인',
+    '완벽주의'
+]
+
 export const auth_schema: GraphQLSchema = buildSchema(`
     type Query {
         login(email: String!, pwd: String!): String
@@ -156,7 +181,7 @@ export const auth_resolver = {
         }).catch((err) => {
            console.log(err);
         });
-        const tag: number[] | undefined = user.tag?.split(',').map((str) => Number(str));
+        const tag: string[] | undefined = user.tag?.split(',').map((any: string) => tag_content[parseInt(any)]);
         res.cookie('token', token, {httpOnly: true});
         res.cookie('refresh_token', refresh_token, {httpOnly: true});
         res.cookie('tag', tag, {httpOnly: true});
