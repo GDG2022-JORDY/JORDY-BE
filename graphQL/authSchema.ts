@@ -41,9 +41,9 @@ export const auth_resolver = {
 
         try {
             transport.sendMail({
-                from: '한국 OSM',
+                from: 'Jordi',
                 to: email,
-                subject: '[OutBox] 이메일 인증번호가 도착했습니다.',
+                subject: '[Jordi] 이메일 인증번호가 도착했습니다.',
                 html: `
                 <table style="margin:auto; text-align:center; padding:0; border-spacing:0; border:0; border-collapse:collapse; width:600px;">
                     <tr>
@@ -53,7 +53,7 @@ export const auth_resolver = {
                     </tr>
                     <tr>
                         <td style="font-size: 30px;text-align: center;padding-top: 10px;">
-                            Welcome to OutBox!
+                            Welcome to Jordi!
                         </td>
                     </tr>
                     <tr>
@@ -68,7 +68,7 @@ export const auth_resolver = {
                     </tr>
                     <tr>
                         <td style="font-size: 20px;text-align: center;color: #919191; padding-top: 40px;padding-bottom: 70px;">
-                            한국 OSM
+                            Jordi
                         </td>
                     </tr>
                 </table>`

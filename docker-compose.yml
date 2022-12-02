@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   app:
-    container_name: outbox_app
+    container_name: jordi_app
     image: node:19-buster-slim
     restart: always
     depends_on:
@@ -22,7 +22,7 @@ services:
     secrets:
       - root_pw
   db:
-    container_name: outbox_mysql
+    container_name: jordi_mysql
     build:
         context: ./docker/mysql
         dockerfile: mysql.Dockerfile
@@ -34,15 +34,15 @@ services:
     environment:
       TZ: "Asia/Seoul"
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/root_pw
-      MYSQL_DATABASE: outbox
-      MYSQL_USER: osmDB
-      MYSQL_PASSWORD_FILE: /run/secrets/osmDB_pw
+      MYSQL_DATABASE: jordi
+      MYSQL_USER: jordiDB
+      MYSQL_PASSWORD_FILE: /run/secrets/jordi_pw
     secrets:
       - root_pw
-      - osmDB_pw
+      - jordi_pw
 
   redis:
-    container_name: outbox_redis
+    container_name: jordi_redis
     image: redis:7.0.5-bullseye
     restart: unless-stopped
     command: redis-server --requirepass "doredis8082" --port 6379
@@ -54,8 +54,8 @@ services:
 secrets:
   root_pw:
     file: ./docker/mysql/mysql_root_pw
-  osmDB_pw:
-    file: ./docker/mysql/mysql_osmDB_pw
+  jordi_pw:
+    file: ./docker/mysql/mysql_jordi_pw
 
 volumes:
     mysql-data:
