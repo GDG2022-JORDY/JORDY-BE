@@ -1,0 +1,3 @@
+[submodule "be"]
+	path = be
+	url = https://github.com/GDG2022-JORDY/JORDY-Backend

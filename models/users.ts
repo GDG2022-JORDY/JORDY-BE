@@ -68,7 +68,7 @@ Users.init(
         }
     },
     {
-        modelName: 'outbox',
+        modelName: 'jordi',
         tableName: 'users',
         sequelize,
         freezeTableName: true,

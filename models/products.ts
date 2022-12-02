@@ -45,7 +45,7 @@ Products.init(
         },
     },
     {
-        modelName: 'outbox',
+        modelName: 'jordi',
         tableName: 'products',
         sequelize,
         freezeTableName: true,

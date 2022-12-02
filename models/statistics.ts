@@ -42,7 +42,7 @@ Statistics.init(
         }
     },
     {
-        modelName: 'outbox',
+        modelName: 'jordi',
         tableName: 'statistics',
         sequelize,
         freezeTableName: true,

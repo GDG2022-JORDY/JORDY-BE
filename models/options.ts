@@ -36,7 +36,7 @@ Options.init(
         }
     },
     {
-        modelName: 'outbox',
+        modelName: 'jordi',
         tableName: 'options',
         sequelize,
         freezeTableName: true,
