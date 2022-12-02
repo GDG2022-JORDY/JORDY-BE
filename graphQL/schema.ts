@@ -24,6 +24,8 @@ export const schema: GraphQLSchema = buildSchema(`
         title: String!
         content: String!
         event: String!
+        location: String!
+        eventDate: String!
         createdAt: String!
     }
     
@@ -41,7 +43,7 @@ export const schema: GraphQLSchema = buildSchema(`
     }
     
     type Mutation {
-        createContent(title: String!, content: String!, event: String!): String
+        createContent(title: String!, content: String!, event: String!, location: String!, date: String!): String
     }
 `);
 
@@ -143,7 +145,7 @@ export const resolver = {
     },
     createContent: async (args: any, context: any, info: any): Promise<string> => {
         const res = context.res;
-        const {title, content, event} = args;
+        const {title, content, event, location, date} = args;
         const token: string = context.req.cookies.token;
         let result: string = SUCCESS;
         if (token === undefined) {
@@ -155,7 +157,9 @@ export const resolver = {
                 name: decoded.name,
                 title: title,
                 content: content,
-                event: event
+                event: event,
+                location: location,
+                eventDate: date
             });
         }
         return result;

@@ -10,16 +10,27 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(255),
+        allowNull: false
       },
       content: {
-        type: Sequelize.STRING(16000)
+        type: Sequelize.STRING(6000)
       },
       name: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
       },
       event: {
-        type: Sequelize.STRING(30)
+        type: Sequelize.STRING(30),
+        allowNull: false
+      },
+      location: {
+        type: Sequelize.STRING(100),
+        allowNull: false
+      },
+      eventDate: {
+        type: Sequelize.STRING(100),
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
