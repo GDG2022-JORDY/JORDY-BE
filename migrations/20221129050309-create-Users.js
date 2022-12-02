@@ -28,23 +28,9 @@ module.exports = {
       refresh_token: {
         type: Sequelize.STRING(299),
       },
-      role: {
-        type: Sequelize.TINYINT,
-        defaultValue: -1,
-        validate: {
-          isInt: true,
-          min: -1,
-          max: 127
-        }
-      },
-      position: {
-        type: Sequelize.TINYINT,
-        defaultValue: -1,
-        validate: {
-          isInt: true,
-          min: -1,
-          max: 127
-        }
+      tag: {
+        type: Sequelize.STRING(50),
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

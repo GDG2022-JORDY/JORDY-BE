@@ -1,18 +1,11 @@
 import Users from './users';
-import Options from "./options";
-import Products from "./products";
-import Statistics from "./statistics";
+import Recruits from "./recruits";
 import {sequelize} from "./connect";
 
-Products.hasMany(Options, {
-    sourceKey: 'productId',
-    foreignKey: 'productId',
-    as: 'options'
-})
-Options.hasMany(Statistics, {
-    sourceKey: 'optionId',
-    foreignKey: 'optionId',
-    as: 'statistics'
+Users.hasMany(Recruits, {
+    sourceKey: 'name',
+    foreignKey: 'name',
+    as: 'recruits'
 })
 
-export {Users, Products, sequelize};
+export {Users, Recruits, sequelize};

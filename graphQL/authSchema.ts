@@ -100,7 +100,7 @@ export const auth_resolver = {
         return SUCCESS;
     },
     createUser: async (args: any, context: any, info: any): Promise<string> => {
-        const {name, email, pwd} = args;
+        const {name, email, pwd, tags} = args;
         const res = context.res;
 
         let resultVal: string = '';
@@ -114,7 +114,8 @@ export const auth_resolver = {
             await Users.create({
                 email: email,
                 password: hashed_pwd,
-                name: name
+                name: name,
+                tag: tags.map((any: { toString: () => any; }) => any.toString()).join()
             }).then((result) => {
                 console.log(result);
                 res.status(200);
@@ -143,11 +144,11 @@ export const auth_resolver = {
             return PASSWORD_NOT_MATCH;
         }
         const token = jwt.sign(
-            {_id: user.id, name: user.name, email: user.email, role: user.role},
+            {_id: user.id, name: user.name, email: user.email, tag: user.tag},
             private_key, {algorithm: 'HS512', expiresIn: '1h'}
         )
         const refresh_token = jwt.sign(
-            {_id: user.id, name: user.name, email: user.email, role: user.role},
+            {_id: user.id, name: user.name, email: user.email, tag: user.tag},
             refresh_priv_key, {algorithm: 'HS512', expiresIn: '14d'}
         )
         Users.update({refresh_token}, {where: {email}}).then((result) => {
@@ -155,8 +156,10 @@ export const auth_resolver = {
         }).catch((err) => {
            console.log(err);
         });
+        const tag: number[] | undefined = user.tag?.split(',').map((str) => Number(str));
         res.cookie('token', token, {httpOnly: true});
         res.cookie('refresh_token', refresh_token, {httpOnly: true});
+        res.cookie('tag', tag, {httpOnly: true});
         return SUCCESS;
     }
 }

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import {buildSchema, GraphQLSchema} from 'graphql';
 import {Users} from "../models";
+import {Recruits} from "../models";
 import {private_key} from "../modules/jwt";
 import jwt, {JwtPayload} from "jsonwebtoken";
 import {fn, col} from "sequelize";
@@ -19,6 +20,12 @@ export const schema: GraphQLSchema = buildSchema(`
         updatedAt: String!
     }
     
+    type Recruit {
+        name: String!
+        title: String!
+        content: String!
+    }
+    
     type listedUser {
         name: String!
         email: String!
@@ -28,11 +35,12 @@ export const schema: GraphQLSchema = buildSchema(`
     type Query {
         users: [listedUser]
         user(name: String, email: String): User
+        contents: [Recruit]
+        content: Recruit
     }
     
     type Mutation {
-        removeUser(email: String!, pwd: String!): String
-        updatePwd(email: String!, pwd: String!, new_pwd: String!): String
+        createContent(name: String!, title: String!, content: String!): String
     }
 `);
 
@@ -104,70 +112,54 @@ export const resolver = {
         }
         return result;
     },
-    removeUser: async (args: any, context: any, info: any): Promise<string> => {
-        const res = context.res;
-        const {email, pwd} = args;
-        const user = await Users.findOne({where: {email}});
-        const token: string = context.req.cookies.token;
-        if (token === undefined) {
-            res.status(401);
-            return 'you need to login first';
-        } else {
-            const verified: [number, string] = await userVerify(email, pwd, token, user,true);
-            if (verified[0] !== 200) {
-                res.status = verified[0];
-                return verified[1];
-            }
-        }
-
-        let result_msg: string = '';
-        await Users.destroy({where: {email}}).then(() => {
-            context.res.clearCookie('token');
-            context.res.clearCookie('refresh_token');
-            console.log('user removed');
-            res.status(200);
-            result_msg = SUCCESS;
-        }).catch((err) => {
-            console.log(err);
-            res.status(500);
-            result_msg = "Internal Server Error";
-        });
-
-        return result_msg;
+    contents: async (args: any, context: any, info: any): Promise<Recruits[]> => {
+        return await Recruits.findAll();
     },
-    updatePwd: async (args: any, context: any, info: any): Promise<string> => {
+    content: async (args: any, context: any, info: any): Promise<Recruits | null | string> => {
         const res = context.res;
-        const {email, pwd, new_pwd} = args;
-        if (pwd === new_pwd) {
-            res.status(400);
-            return "new password can't be the same as old password";
-        }
-        const user = await Users.findOne({where: {email}});
-        if (user === null) return USER_NOT_FOUND;
+        const {title} = args;
         const token: string = context.req.cookies.token;
+        let result: Recruits | null = null;
         if (token === undefined) {
             res.status(401);
             return 'you need to login first';
         } else {
-            const verified: [number, string] = await userVerify(email, pwd, token, user, true);
-            if (verified[0] !== 200) {
-                res.status = verified[0];
-                return verified[1];
+            const decoded: JwtPayload = jwt.verify(token, private_key) as JwtPayload;
+            if (decoded.role === 127 || title !== undefined) {
+                result = await Recruits.findOne({
+                    where: {title},
+                    attributes: {
+                        include: [
+                            [
+                                fn('DATE_FORMAT', col('createdAt'), '%Y-%m-%d %H:%i:%s'),
+                                "createdAt"
+                            ]
+                        ]
+                    }
+                });
+            } else {
+                res.status(400);
+                return "please provide title";
             }
         }
-
-        let result_msg: string = '';
-        const salt = await bcrypt.genSalt(10);
-        const hashed_pwd = await bcrypt.hash(new_pwd, salt);
-        await Users.update({password: hashed_pwd}, {where: {email}}).then(() => {
-            console.log('user password updated');
-            res.status(200);
-            result_msg = SUCCESS;
-        }).catch((err) => {
-            console.log(err);
-            res.status(500);
-            result_msg = "Internal Server Error";
-        });
-        return result_msg;
+        return result;
+    },
+    createContent: async (args: any, context: any, info: any): Promise<string> => {
+        const res = context.res;
+        const {title, content} = args;
+        const token: string = context.req.cookies.token;
+        let result: string = SUCCESS;
+        if (token === undefined) {
+            res.status(401);
+            result = 'you need to login first';
+        } else {
+            const decoded: JwtPayload = jwt.verify(token, private_key) as JwtPayload;
+            await Recruits.create({
+                name: decoded.name,
+                title: title,
+                content: content
+            });
+        }
+        return result;
     }
 }

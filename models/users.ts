@@ -18,8 +18,7 @@ interface UsersAttributes {
     password: string,
     name: string,
     refresh_token?: string,
-    role?: number,
-    position?: number
+    tag?: string
 }
 
 class Users extends Model<UsersAttributes> {
@@ -28,8 +27,7 @@ class Users extends Model<UsersAttributes> {
     public password!: string;
     public name!: string;
     public refresh_token?: string;
-    public role?: number;
-    public position?: number;
+    public tag?: string;
 
     public static associations: {
 
@@ -60,11 +58,8 @@ Users.init(
         refresh_token: {
             type: DataTypes.STRING(299),
         },
-        role: {
-            type: DataTypes.TINYINT,
-        },
-        position: {
-            type: DataTypes.TINYINT,
+        tag: {
+            type: DataTypes.TINYINT.UNSIGNED,
         }
     },
     {
