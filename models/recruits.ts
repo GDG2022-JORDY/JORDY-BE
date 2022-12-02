@@ -7,13 +7,15 @@ import { sequelize } from './connect';
 interface RecruitsAttributes {
     title: string,
     content: string,
-    name: string
+    name: string,
+    event: string
 }
 
 class Recruits extends Model<RecruitsAttributes> {
     public title!: string;
     public content!: string;
     public name!: string;
+    public event!: string;
 
     public static associations: {
 
@@ -33,6 +35,10 @@ Recruits.init(
         name: {
             type: DataTypes.STRING(30),
             allowNull: false,
+        },
+        event: {
+            type: DataTypes.STRING(30),
+            allowNull: false,
         }
     },
     {
@@ -41,6 +47,7 @@ Recruits.init(
             sequelize,
             freezeTableName: true,
             createdAt: true,
+            updatedAt: false,
     }
 );
 

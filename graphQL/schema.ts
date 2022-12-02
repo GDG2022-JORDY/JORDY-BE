@@ -23,12 +23,14 @@ export const schema: GraphQLSchema = buildSchema(`
         name: String!
         title: String!
         content: String!
+        event: String!
+        createdAt: String!
     }
     
     type listedUser {
         name: String!
         email: String!
-        tag: [Int]!
+        tag: String!
     }
     
     type Query {
@@ -39,7 +41,7 @@ export const schema: GraphQLSchema = buildSchema(`
     }
     
     type Mutation {
-        createContent(name: String!, title: String!, content: String!): String
+        createContent(title: String!, content: String!, event: String!): String
     }
 `);
 
@@ -99,7 +101,16 @@ export const resolver = {
         return result;
     },
     contents: async (args: any, context: any, info: any): Promise<Recruits[]> => {
-        return await Recruits.findAll();
+        return await Recruits.findAll({
+            attributes: {
+                include: [
+                    [
+                        fn('DATE_FORMAT', col('createdAt'), '%Y-%m-%d %H:%i:%s'),
+                        "createdAt"
+                    ]
+                ]
+            }
+        });
     },
     content: async (args: any, context: any, info: any): Promise<Recruits | null | string> => {
         const res = context.res;
@@ -132,7 +143,7 @@ export const resolver = {
     },
     createContent: async (args: any, context: any, info: any): Promise<string> => {
         const res = context.res;
-        const {title, content} = args;
+        const {title, content, event} = args;
         const token: string = context.req.cookies.token;
         let result: string = SUCCESS;
         if (token === undefined) {
@@ -143,7 +154,8 @@ export const resolver = {
             await Recruits.create({
                 name: decoded.name,
                 title: title,
-                content: content
+                content: content,
+                event: event
             });
         }
         return result;
