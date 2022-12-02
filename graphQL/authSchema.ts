@@ -18,7 +18,7 @@ export const auth_schema: GraphQLSchema = buildSchema(`
     type Mutation {
         sendVerifyCode(email: String!): String
         verifyEmail(email: String!, code: String!): String
-        createUser(email: String!, pwd: String!, name: String!): String
+        createUser(email: String!, pwd: String!, name: String!, tags: [Int]!): String
     }
 `)
 

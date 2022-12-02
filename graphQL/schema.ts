@@ -14,8 +14,7 @@ export const schema: GraphQLSchema = buildSchema(`
     type User {
         name: String!
         email: String!
-        role: Int!
-        position: Int
+        tags: [Int]!
         createdAt: String!
         updatedAt: String!
     }
@@ -29,7 +28,7 @@ export const schema: GraphQLSchema = buildSchema(`
     type listedUser {
         name: String!
         email: String!
-        position: Int
+        tags: [Int]!
     }
     
     type Query {
@@ -43,19 +42,6 @@ export const schema: GraphQLSchema = buildSchema(`
         createContent(name: String!, title: String!, content: String!): String
     }
 `);
-
-async function userVerify(email: string, pwd: string, token: string, user: Users | null, admin: boolean): Promise<[number, string]> {
-    let result: [number, string] = [200, SUCCESS];
-    const decoded: JwtPayload = jwt.verify(token, private_key) as JwtPayload;
-    if (!user) {
-        result = [404, USER_NOT_FOUND];
-    } else if (decoded.email !== email || (admin && decoded.role === 127)) {
-        result = [401, 'you can only access your own information'];
-    } else if (!await bcrypt.compare(pwd, user.password)) {
-        result = [401, PASSWORD_NOT_MATCH];
-    }
-    return result;
-}
 
 export const resolver = {
     users: async (args: any, context: any, info: any): Promise<any> => {
